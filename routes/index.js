@@ -8,12 +8,14 @@ const USER=require('../Model/user');
 // This Route iS For Admins
 router.get('/admin', adminController.Alladmin);
 router.post('/admin/newadmin', adminController.New_admin);
+router.post('/admin/adminlogin', adminController.Admin_login);
 router.delete('/admin/removeadmin/:aid',adminController.Delete_admin)
 router.put('/admin/updateadmin/:aid',adminController.Update_admin)
 
 // This Route iS For Users
 router.get('/user',userController.Alluser)
 router.post('/user/newuser',userController.New_user)
+router.post('/user/userlogin',userController.User_login)
 router.delete('/user/removeuser/:email',userController.Delete_user)
 router.put('/user/updateuser/:email',userController.Update_user)
 

@@ -33,6 +33,34 @@ exports.New_admin=async function(req, res, next) {
       })
     }
   }
+  exports.Admin_login=async function(req, res, next) {
+    try {
+      if(!req.body.aid || !req.body.apass ){
+      throw new Error ("Please enter Your All Details For Admin Login")
+      }
+     const checkid=await ADMIN.findOne({aid:req.body.aid})
+     if(!checkid)
+     {
+      throw new Error("Id is not Found")
+     }
+     const checkpass=checkid.apass===req.body.apass
+     if(!checkpass)
+      {
+        throw new Error("Password is not Correct")
+      }
+      
+      res.status(200).json({
+        status:"Success Admin Login",
+        data:checkid
+  
+      })
+    } catch (error) {
+      res.status(404).json({
+        status:"Failed To Login The Admin",
+        error:error.message
+      })
+    }
+  }
   exports.Delete_admin=async function(req, res, next) {
     try {
       const{aid}=req.params

@@ -33,6 +33,32 @@ exports.New_user=async function(req,res) {
       })
   }
 }
+exports.User_login=async function(req,res) {
+    try {
+        if(!req.body.email || !req.body.password ){
+        throw new Error ("Please enter Your All Details For User Data")
+        }
+        const checkuid=await USER.findOne({email:req.body.email})
+        if(!checkuid)
+        {
+            throw new Error("User Id is not Correct")    
+        }
+        const checkuserpassword=checkuid.password === req.body.password
+        if(!checkuserpassword){
+            throw new Error("User Password is Not Correct")
+        }
+       res.status(200).json({
+        status:"User Login Successfully",
+        data:checkuid
+  
+       }) 
+    } catch (error) {
+        res.status(404).json({
+            status:"Failed To Login The User",
+            error:error.message
+        })
+    }
+  }
 exports.Delete_user=async function(req,res) {
     try {
         const {email}=req.params
