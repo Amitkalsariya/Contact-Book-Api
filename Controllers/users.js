@@ -1,5 +1,29 @@
 const USER=require('../Model/user')
-
+const bcrypt=require("bcrypt")  
+const jwt=require("jsonwebtoken")
+exports.User_secure=async function(req, res, next) {
+  try {
+    const token=req.headers.authorization
+    if(!token)
+    {
+      throw new  Error ("Please Enter Your Token")
+    }
+    const dtoken=jwt.verify(token,"MALWARE")
+    console.log(dtoken);
+    
+    const validuser=await USER.findById(dtoken.email)
+    if(!validuser)
+    {
+      throw new Error("User Not Found")
+    }
+    next()
+  } catch (error) {
+    res.status(404).json({
+      status:"Failed To Load The Data",
+      error:error.message
+    })
+  }
+}
 exports.Alluser=async function(req,res) {
     try {
         const alluser=await USER.find()
@@ -20,6 +44,7 @@ exports.New_user=async function(req,res) {
       if(!req.body.fname || !req.body.mname || !req.body.lname || !req.body.email || !req.body.password || !req.body.dob || !req.body.phone){
       throw new Error ("Please enter Your All Details For User Data")
       }
+      req.body.password=bcrypt.hashSync(req.body.password,11)
       const newuser=await USER.create(req.body)
      res.status(200).json({
       status:"Success For Add New User",
@@ -43,13 +68,16 @@ exports.User_login=async function(req,res) {
         {
             throw new Error("User Id is not Correct")    
         }
-        const checkuserpassword=checkuid.password === req.body.password
+        const checkuserpassword=bcrypt.compareSync(req.body.password,checkuid.password)
         if(!checkuserpassword){
             throw new Error("User Password is Not Correct")
         }
+        const token=jwt.sign({email:checkuid._id},"MALWARE",{
+            expiresIn:"1h"
+        })
        res.status(200).json({
         status:"User Login Successfully",
-        data:checkuid
+        data:checkuid,token
   
        }) 
     } catch (error) {

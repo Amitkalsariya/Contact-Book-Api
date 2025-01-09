@@ -6,14 +6,14 @@ const contactController=require("../Controllers/contacts");
 const USER=require('../Model/user');
 
 // This Route iS For Admins
-router.get('/admin', adminController.Alladmin);
+router.get('/admin',adminController.Admin_secure, adminController.Alladmin);
 router.post('/admin/newadmin', adminController.New_admin);
 router.post('/admin/adminlogin', adminController.Admin_login);
 router.delete('/admin/removeadmin/:aid',adminController.Delete_admin)
 router.put('/admin/updateadmin/:aid',adminController.Update_admin)
 
 // This Route iS For Users
-router.get('/user',userController.Alluser)
+router.get('/user',userController.User_secure, userController.Alluser)
 router.post('/user/newuser',userController.New_user)
 router.post('/user/userlogin',userController.User_login)
 router.delete('/user/removeuser/:email',userController.Delete_user)

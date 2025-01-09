@@ -1,5 +1,29 @@
 const ADMIN=require('../Model/admin')
-
+const bcrypt=require("bcrypt")
+const jwt=require("jsonwebtoken")
+exports.Admin_secure=async function(req, res, next) {
+  try {
+    const token=req.headers.authorization
+    if(!token)
+    {
+      throw new  Error ("Please Enter Your Token")
+    }
+    const dtoken=jwt.verify(token,"VIRUS")
+    console.log(dtoken);
+    
+    const validuser=await ADMIN.findById(dtoken.aid)
+    if(!validuser)
+    {
+      throw new Error("User Not Found")
+    }
+    next()
+  } catch (error) {
+    res.status(404).json({
+      status:"Failed To Load The Data",
+      error:error.message
+    })
+  }
+}
 exports.Alladmin=async function(req, res, next) {
   try {
     const alladmin =await ADMIN.find()
@@ -20,6 +44,7 @@ exports.New_admin=async function(req, res, next) {
       if(!req.body.aid || !req.body.apass || !req.body.fname || !req.body.lname || !req.body.email){
       throw new Error ("Please enter Your All Details For Admin Data")
       }
+      req.body.apass=bcrypt.hashSync(req.body.apass,10)
       const newadmin =await ADMIN.create(req.body)
       res.status(200).json({
         status:"Success For Add New Admin",
@@ -43,15 +68,18 @@ exports.New_admin=async function(req, res, next) {
      {
       throw new Error("Id is not Found")
      }
-     const checkpass=checkid.apass===req.body.apass
+     const checkpass=bcrypt.compareSync(req.body.apass,checkid.apass)
      if(!checkpass)
       {
         throw new Error("Password is not Correct")
       }
-      
+      const token=jwt.sign({aid:checkid._id},"VIRUS",{
+        expiresIn:"1h"
+      })
+
       res.status(200).json({
         status:"Success Admin Login",
-        data:checkid
+        data:checkid,token
   
       })
     } catch (error) {
