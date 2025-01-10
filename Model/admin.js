@@ -9,7 +9,8 @@ const admin = new Schema({
   },
   apass: {
     type :String,
-    required:true
+    required:true,
+    
   },
   fname: {
     type :String,
