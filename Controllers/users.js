@@ -76,7 +76,7 @@ exports.User_login=async function(req,res) {
             expiresIn:"1h"
         })
        res.status(200).json({
-        status:"User Login Successfully",
+        status:"User Login Successfully . ",
         data:checkuid,token
   
        }) 
