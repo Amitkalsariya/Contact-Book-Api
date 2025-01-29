@@ -19,10 +19,11 @@ router.post('/user/userlogin',userController.User_login)
 router.delete('/user/removeuser/:email',userController.Delete_user)
 router.put('/user/updateuser/:email',userController.Update_user)
 
-// This Route is For Contacts
+// This Route is For Contacts  
 router.get('/contact',contactController.Allcontact)
 router.post('/contact/newcontact',contactController.New_contact)
 router.delete('/contact/removecontact/:ref_number',contactController.Delete_contact)
 router.put('/contact/updatecontact/:ref_number',contactController.Update_contact)
 
 module.exports = router;
+  

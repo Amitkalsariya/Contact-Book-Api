@@ -1,6 +1,31 @@
 const USER = require('../Model/user')
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const nodemailer = require("nodemailer");
+// let otp=Math.floor(1000+Math.random()*9000)
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true for port 465, false for other ports
+  auth: {
+    user: "amitkalsariya2023.katargam@gmail.com",
+    pass: "nmmesbhhyzinyrpz",
+  },
+});
+
+// async..await is not allowed in global scope, must use a wrapper
+async function main(mail) {
+  // send mail with defined transport object
+  const info = await transporter.sendMail({
+    from: 'amitkalsariya2023.katargam@gmail.com', // sender address
+    to:mail, // list of receivers
+    subject: "Welcome In to Testing Mail Services", // Subject line
+   
+    html: "<b style='color:red'>Bol na Buud Ke ball</b> "
+    , // html body
+  });
+}
+ 
 exports.User_secure = async function (req, res, next) {
   try {
     const token = req.headers.authorization
@@ -44,6 +69,7 @@ exports.New_user = async function (req, res) {
     }
     req.body.password = bcrypt.hashSync(req.body.password, 11)
     const newuser = await USER.create(req.body)
+    await main(newuser.email)
     res.status(200).json({
       status: "Success For Add New User",
       data: newuser
@@ -69,9 +95,7 @@ exports.User_login = async function (req, res) {
     if (!checkuserpassword) {
       throw new Error("User Password is Not Correct")
     }
-    const token = jwt.sign({ email: checkuid._id }, "MALWARE", {
-      expiresIn: "1h"
-    })
+    const token = jwt.sign({ email: checkuid._id }, "MALWARE")
     res.status(200).json({
       status: "User Login Successfully . ",
       data: checkuid, token

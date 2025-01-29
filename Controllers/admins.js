@@ -73,9 +73,7 @@ exports.New_admin=async function(req, res, next) {
       {
         throw new Error("Password is not Correct")
       }
-      const token=jwt.sign({aid:checkid._id},"VIRUS",{
-        expiresIn:"1h"
-      })
+      const token=jwt.sign({aid:checkid._id},"VIRUS")
 
       res.status(200).json({
         status:"Success Admin Login",
